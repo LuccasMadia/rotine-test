@@ -83,8 +83,7 @@ npm install -D vitest @testing-library/react @testing-library/jest-dom jsdom @vi
 - [ ] **Step 4: Configure Vitest in `vite.config.ts`**
 
 ```ts
-/// <reference types="vitest/config" />
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
@@ -177,8 +176,7 @@ Generate two solid-color PNGs (192x192 and 512x512) and save them as `public/ico
 - [ ] **Step 3: Configure the plugin in `vite.config.ts`**
 
 ```ts
-/// <reference types="vitest/config" />
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
