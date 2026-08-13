@@ -231,7 +231,7 @@ git commit -m "feat: configure installable PWA manifest and service worker"
 
 ---
 
-### Task 3: Supabase local dev stack + schema migration + RLS policies
+### Task 3: Hosted Supabase project + schema migration + RLS policies
 
 **Files:**
 - Create: `supabase/migrations/0001_init_schema.sql`
@@ -240,22 +240,19 @@ git commit -m "feat: configure installable PWA manifest and service worker"
 **Interfaces:**
 - Produces: Postgres tables `couples`, `categories`, `routine_items`, `item_completions`, `push_subscriptions`, and a `partner_id(uid uuid) returns uuid` SQL function. Later tasks (auth, couple pairing, and Plan 2's CRUD) read/write these tables through `supabaseClient` (Task 4).
 
-**Prerequisite:** Docker Desktop installed and running (required by `supabase start`).
+**Prerequisite:** No Docker required — this task uses a free hosted Supabase project instead of the local CLI stack. Requires a supabase.com account (user creates this manually; the assistant cannot sign up on the user's behalf).
 
-- [ ] **Step 1: Install the Supabase CLI and initialize**
+- [ ] **Step 1: Create the hosted Supabase project**
 
-```bash
-npm install -D supabase
-npx supabase init
-```
+Go to https://supabase.com/dashboard, sign up or log in, click "New project", name it (e.g. `rotina-casal`), pick a region close to you, and set a database password (store it somewhere safe — not needed again for this plan).
 
-- [ ] **Step 2: Start the local Supabase stack**
+- [ ] **Step 2: Collect the project's connection values**
 
-```bash
-npx supabase start
-```
+In the new project, go to Project Settings → API. Note down:
+- `Project URL` (looks like `https://<ref>.supabase.co`)
+- `anon public` key
 
-Expected: output prints local `API URL`, `anon key`, and `service_role key`. Keep this terminal running; note the values for Task 4.
+These are safe to use in frontend code (they're constrained by RLS) — you'll paste them into `.env.local` in Task 4.
 
 - [ ] **Step 3: Write the schema migration**
 
@@ -424,23 +421,24 @@ using (user_id = auth.uid())
 with check (user_id = auth.uid());
 ```
 
-- [ ] **Step 4: Apply the migration to the local stack**
+- [ ] **Step 4: Apply the migration via the Supabase SQL Editor**
 
-```bash
-npx supabase db reset
-```
+In the project dashboard, open SQL Editor → New query, paste the full contents of `supabase/migrations/0001_init_schema.sql`, and run it.
+Expected: "Success. No rows returned" with no errors. Confirm the 5 tables appear under Table Editor.
 
-Expected: output ends with `Finished supabase db reset`, no SQL errors.
+- [ ] **Step 5: Disable email confirmation for this test project**
 
-- [ ] **Step 5: Install integration test dependencies**
+Go to Authentication → Providers → Email and turn **off** "Confirm email". This is a 2-person test app; without this, `signUp()` won't return an active session until the user clicks a confirmation link, which would break both the integration test below and the real signup flow in Task 5.
+
+- [ ] **Step 6: Install integration test dependencies**
 
 ```bash
 npm install -D @supabase/supabase-js dotenv
 ```
 
-- [ ] **Step 6: Write the RLS integration test**
+- [ ] **Step 7: Write the RLS integration test**
 
-`tests/integration/rls.test.ts` (uses the local Supabase instance started in Step 2 — reads URL/anon key from env vars set in Step 7):
+`tests/integration/rls.test.ts` (runs against the hosted project created in Step 1 — reads URL/anon key from env vars set at run time):
 
 ```ts
 import { createClient } from '@supabase/supabase-js'
@@ -519,17 +517,19 @@ describe('routine_items RLS', () => {
 })
 ```
 
-- [ ] **Step 7: Run the integration test against the local stack**
+- [ ] **Step 8: Run the integration test against the hosted project**
 
-Take the `API URL` and `anon key` printed by `npx supabase start` in Step 2, then run:
+Using the `Project URL` and `anon public` key collected in Step 2, run:
 
 ```bash
-SUPABASE_URL=http://127.0.0.1:54321 SUPABASE_ANON_KEY=<anon-key-from-supabase-start> npx vitest run tests/integration/rls.test.ts
+SUPABASE_URL=https://<your-ref>.supabase.co SUPABASE_ANON_KEY=<anon-key-from-dashboard> npx vitest run tests/integration/rls.test.ts
 ```
 
 Expected: both tests PASS (`user A cannot see user B personal item`, `partner can see and edit a shared item`).
 
-- [ ] **Step 8: Commit**
+Afterwards, in Table Editor, delete the 4 test rows created in `auth.users` (emails containing `-rls@test.com`, `a-shared-`, `b-shared-`) so they don't linger in the real project.
+
+- [ ] **Step 9: Commit**
 
 ```bash
 git add supabase/migrations/0001_init_schema.sql tests/integration/rls.test.ts package.json package-lock.json
@@ -545,7 +545,7 @@ git commit -m "feat: add Supabase schema, RLS policies, and RLS integration test
 - Modify: `.gitignore`
 
 **Interfaces:**
-- Consumes: local Supabase URL/anon key from Task 3 Step 2 (or a hosted Supabase project's URL/anon key once created).
+- Consumes: the hosted Supabase project's URL/anon key collected in Task 3 Step 2.
 - Produces: `supabase` — a configured `SupabaseClient` singleton, imported by every feature module from Task 5 onward.
 
 - [ ] **Step 1: Add env vars**
@@ -557,11 +557,11 @@ VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
 ```
 
-`.env.local` (fill with the values from `npx supabase start`, not committed):
+`.env.local` (fill with the `Project URL` and `anon public` key from Task 3 Step 2, not committed):
 
 ```
-VITE_SUPABASE_URL=http://127.0.0.1:54321
-VITE_SUPABASE_ANON_KEY=<anon-key-from-supabase-start>
+VITE_SUPABASE_URL=https://<your-ref>.supabase.co
+VITE_SUPABASE_ANON_KEY=<anon-key-from-dashboard>
 ```
 
 Add to `.gitignore`:
@@ -1050,5 +1050,5 @@ git commit -m "feat: add couple pairing via create/join code"
 
 ## Manual Verification (end of Plan 1)
 
-- [ ] With `npx supabase start` running, `npm run dev`, sign up as two different emails in two browser profiles, create a couple code with one and join with the other, and confirm both land on `/` without errors.
+- [ ] With `.env.local` pointed at the hosted project and `npm run dev` running, sign up as two different emails in two browser profiles, create a couple code with one and join with the other, and confirm both land on `/` without errors.
 - [ ] Run `npm run build && npm run preview`, open the preview URL on an Android phone and an iPhone (same Wi-Fi network), and confirm the "Add to Home Screen" / "Instalar app" prompt appears.
