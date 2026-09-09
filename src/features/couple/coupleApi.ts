@@ -26,3 +26,9 @@ export async function joinCouple(userId: string, code: string): Promise<void> {
     throw new Error('Código inválido ou já utilizado.')
   }
 }
+
+export async function getPartnerId(userId: string): Promise<string | null> {
+  const { data, error } = await supabase.rpc('partner_id', { uid: userId })
+  if (error) throw error
+  return data
+}

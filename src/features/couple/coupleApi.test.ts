@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { createCouple, joinCouple } from './coupleApi'
+import { createCouple, getPartnerId, joinCouple } from './coupleApi'
 import { supabase } from '../../lib/supabaseClient'
 
 vi.mock('../../lib/supabaseClient', () => {
@@ -10,7 +10,8 @@ vi.mock('../../lib/supabaseClient', () => {
   const eq = vi.fn().mockReturnValue({ select: updateSelect })
   const update = vi.fn().mockReturnValue({ eq })
   const from = vi.fn().mockReturnValue({ insert, update })
-  return { supabase: { from } }
+  const rpc = vi.fn().mockResolvedValue({ data: 'partner-user-id', error: null })
+  return { supabase: { from, rpc } }
 })
 
 describe('coupleApi', () => {
@@ -35,5 +36,11 @@ describe('coupleApi', () => {
     await expect(joinCouple('user-b-id', 'BADCODE')).rejects.toThrow(
       'Código inválido ou já utilizado.'
     )
+  })
+
+  it('getPartnerId calls the partner_id RPC with the given user id', async () => {
+    const result = await getPartnerId('user-a-id')
+    expect(supabase.rpc).toHaveBeenCalledWith('partner_id', { uid: 'user-a-id' })
+    expect(result).toBe('partner-user-id')
   })
 })
