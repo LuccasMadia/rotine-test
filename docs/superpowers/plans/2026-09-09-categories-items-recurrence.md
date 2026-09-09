@@ -1689,3 +1689,13 @@ git commit -m "test: add RLS negative-path coverage for personal items and categ
 - [ ] Create a routine item with each recurrence type (única, diária, semanal, mensal) and each end condition (nunca, até data, nº de repetições); confirm it appears correctly in `/items` with a sensible recurrence summary.
 - [ ] Edit an existing item and confirm the form pre-fills all fields correctly, including the recurrence sub-fields.
 - [ ] Pair two accounts (via `/couple-setup`, as in Plan 1) and confirm the "Compartilhar com o parceiro" checkbox only appears once paired, and that a shared item created by one account is editable by the other via `/items`.
+
+## Known gaps carried into Plan 3
+
+Flagged by the final whole-branch review after Plan 2 completed. One was fixed immediately (below); the rest are accepted as deliberate scope decisions for this pre-launch, 2-person app.
+
+- **`recurrence_end` column had no default (fixed).** `routine_items.recurrence_end` was nullable with no default in Plan 1's schema; Task 2's migration fixed `recurrence_rule`'s default but missed the matching fix for `recurrence_end`, while `RecurrenceEnd` (TypeScript) is non-nullable and `ItemFormPage.tsx` dereferences `item.recurrence_end.type` unconditionally on edit. Latent today (the app always writes a value), but Plan 3 is the recurrence engine's first real consumer and would have hit a null-dereference crash on any row missing it. Fixed in commit `de085b5` (`alter column recurrence_end set default '{"type":"never"}'::jsonb`), applied live and verified against the hosted project.
+- **`ItemsListPage` heading says "Meus itens" but also shows the partner's shared items.** This is intended behavior (`listItems()` returns own + shared-by-partner rows per Plan 1's RLS), just a label that undersells what's shown. Cosmetic; revisit if Plan 3's Hoje/Agenda screens want a clearer own-vs-shared distinction.
+- **No automated cleanup of integration-test throwaway accounts.** Matches Plan 1's existing manual-cleanup convention. Test accounts created during Plan 2's work were cleaned up manually via a scoped SQL delete against `auth.users` after the final review.
+- **Recurrence form's numeric fields (weekly interval, monthly day, end count) rely on HTML5 `min`/`max` only** — no explicit JS-side validation in `ItemFormPage.tsx`. Low risk given the browser enforces the constraint on submit, but no defense-in-depth if that ever changes.
+- **Edit-mode partner-unpair edge case.** If a couple unpairs between creating a shared item and editing it, `ItemFormPage.tsx` can silently resubmit a stale `is_shared: true` (the checkbox is hidden but the loaded value isn't reset). Not a security hole — RLS still scopes access correctly — just a data-consistency nit.
