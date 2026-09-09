@@ -1,5 +1,41 @@
-function App() {
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { AuthProvider } from './features/auth/AuthContext'
+import ProtectedRoute from './features/auth/ProtectedRoute'
+import LoginPage from './features/auth/LoginPage'
+import SignupPage from './features/auth/SignupPage'
+import CoupleSetupPage from './features/couple/CoupleSetupPage'
+
+function Home() {
   return <div>Rotina do Casal</div>
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route
+            path="/couple-setup"
+            element={
+              <ProtectedRoute>
+                <CoupleSetupPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  )
 }
 
 export default App
