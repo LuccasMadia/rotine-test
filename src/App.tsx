@@ -5,6 +5,7 @@ import LoginPage from './features/auth/LoginPage'
 import SignupPage from './features/auth/SignupPage'
 import CoupleSetupPage from './features/couple/CoupleSetupPage'
 import CategoriesPage from './features/categories/CategoriesPage'
+import ItemFormPage from './features/items/ItemFormPage'
 
 function Home() {
   return (
@@ -37,6 +38,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <CategoriesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/items/new"
+            element={
+              <ProtectedRoute>
+                <ItemFormPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/items/:id/edit"
+            element={
+              <ProtectedRoute>
+                <ItemFormPage />
               </ProtectedRoute>
             }
           />
