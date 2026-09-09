@@ -6,6 +6,7 @@ import SignupPage from './features/auth/SignupPage'
 import CoupleSetupPage from './features/couple/CoupleSetupPage'
 import CategoriesPage from './features/categories/CategoriesPage'
 import ItemFormPage from './features/items/ItemFormPage'
+import ItemsListPage from './features/items/ItemsListPage'
 
 function Home() {
   return (
@@ -13,6 +14,7 @@ function Home() {
       <h1>Rotina do Casal</h1>
       <nav>
         <Link to="/categories">Categorias</Link>
+        <Link to="/items">Meus itens</Link>
       </nav>
     </div>
   )
@@ -38,6 +40,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <CategoriesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/items"
+            element={
+              <ProtectedRoute>
+                <ItemsListPage />
               </ProtectedRoute>
             }
           />
