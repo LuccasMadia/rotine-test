@@ -16,9 +16,13 @@ export async function createCouple(userId: string): Promise<{ code: string }> {
 }
 
 export async function joinCouple(userId: string, code: string): Promise<void> {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('couples')
     .update({ user_b: userId })
     .eq('code', code)
+    .select()
   if (error) throw error
+  if (!data || data.length === 0) {
+    throw new Error('Código inválido ou já utilizado.')
+  }
 }
