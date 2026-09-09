@@ -75,4 +75,55 @@ describe('routine_items RLS', () => {
       .eq('id', item!.id)
     expect(updateError).toBeNull()
   })
+
+  it('partner cannot edit a personal (non-shared) item', async () => {
+    const ts = Date.now()
+    const code = `code-${ts}`
+    const a = await signUp(`luccasmadia07+a-personal-${ts}@gmail.com`, 'password123')
+    const b = await signUp(`luccasmadia07+b-personal-${ts}@gmail.com`, 'password123')
+
+    await a.client.from('couples').insert({ code, user_a: a.userId })
+    await b.client.from('couples').update({ user_b: b.userId }).eq('code', code)
+
+    const { data: category } = await a.client
+      .from('categories')
+      .insert({ user_id: a.userId, nome: 'Trabalho', cor: '#000', icone: 'briefcase' })
+      .select()
+      .single()
+
+    const { data: item } = await a.client
+      .from('routine_items')
+      .insert({
+        user_id: a.userId,
+        category_id: category!.id,
+        titulo: 'Reunião pessoal',
+        data_inicio: '2026-08-12',
+        horario: '10:00',
+        is_shared: false,
+      })
+      .select()
+      .single()
+
+    const { data: updateResult, error: updateError } = await b.client
+      .from('routine_items')
+      .update({ titulo: 'Alterado por B' })
+      .eq('id', item!.id)
+      .select()
+
+    expect(updateError).toBeNull()
+    expect(updateResult).toEqual([])
+  })
+
+  it('user cannot see another user\'s category', async () => {
+    const ts = Date.now()
+    const a = await signUp(`luccasmadia07+a-cat-${ts}@gmail.com`, 'password123')
+    const b = await signUp(`luccasmadia07+b-cat-${ts}@gmail.com`, 'password123')
+
+    await b.client
+      .from('categories')
+      .insert({ user_id: b.userId, nome: 'Estudos', cor: '#000', icone: 'book' })
+
+    const { data: seenByA } = await a.client.from('categories').select('*').eq('user_id', b.userId)
+    expect(seenByA).toEqual([])
+  })
 })
