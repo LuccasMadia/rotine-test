@@ -12,12 +12,12 @@
     "test:integration": "vitest run --dir tests/integration"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.18.3"
   },
   "devDependencies": {
-    "@supabase/supabase-js": "^2.112.3",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.2",
     "@types/react": "^18.3.3",
