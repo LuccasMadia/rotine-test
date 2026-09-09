@@ -1050,3 +1050,10 @@ git commit -m "feat: add couple pairing via create/join code"
 
 - [ ] With `.env.local` pointed at the hosted project and `npm run dev` running, sign up as two different emails in two browser profiles, create a couple code with one and join with the other, and confirm both land on `/` without errors.
 - [ ] Run `npm run build && npm run preview`, open the preview URL on an Android phone and an iPhone (same Wi-Fi network), and confirm the "Add to Home Screen" / "Instalar app" prompt appears.
+
+## Known gaps carried into Plan 2
+
+Flagged by the final whole-branch review after Plan 1 completed; both accepted as deliberate scope decisions rather than fixed in Plan 1.
+
+- **Default categories (Global Constraint) not implemented.** New accounts get zero categories today — no task in this plan seeds the 4 defaults (Treino/Saúde, Estudos, Trabalho, Lazer). Plan 2 (Categories & Routine Items CRUD) must include this, either as a DB trigger on `auth.users` or client-side seeding right after signup/couple-setup.
+- **`couples` RLS is more permissive than the UI implies.** The `select own or joinable couples` policy exposes every row with `user_b is null` (code + `user_a` id) to any authenticated user, and `join couple` lets anyone set themselves as `user_b` on any open couple — the client only filters by code, RLS doesn't enforce it. Accepted for now since this is a 2-person app with no adversarial users; revisit (e.g. move the join through a `SECURITY DEFINER` RPC that checks the code server-side) if the product ever opens beyond a single trusted couple per deploy.
