@@ -2,6 +2,10 @@
 alter table routine_items
   alter column recurrence_rule set default '{"type":"once"}'::jsonb;
 
+-- Fix recurrence_end default to match the app's RecurrenceEnd shape.
+alter table routine_items
+  alter column recurrence_end set default '{"type":"never"}'::jsonb;
+
 -- Seed 4 default categories for every new auth user.
 create or replace function seed_default_categories()
 returns trigger
