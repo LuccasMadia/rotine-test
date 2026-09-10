@@ -17,7 +17,7 @@ function formatISODate(date: Date): string {
   return date.toISOString().slice(0, 10)
 }
 
-function addDays(dateStr: string, days: number): string {
+export function addDays(dateStr: string, days: number): string {
   const date = parseISODate(dateStr)
   date.setUTCDate(date.getUTCDate() + days)
   return formatISODate(date)
@@ -31,7 +31,7 @@ function dayOfMonth(dateStr: string): number {
   return parseISODate(dateStr).getUTCDate()
 }
 
-function startOfWeek(dateStr: string): string {
+export function startOfWeek(dateStr: string): string {
   return addDays(dateStr, -dayOfWeek(dateStr))
 }
 
