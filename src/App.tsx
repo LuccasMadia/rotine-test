@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './features/auth/AuthContext'
 import ProtectedRoute from './features/auth/ProtectedRoute'
 import LoginPage from './features/auth/LoginPage'
@@ -7,18 +7,7 @@ import CoupleSetupPage from './features/couple/CoupleSetupPage'
 import CategoriesPage from './features/categories/CategoriesPage'
 import ItemFormPage from './features/items/ItemFormPage'
 import ItemsListPage from './features/items/ItemsListPage'
-
-function Home() {
-  return (
-    <div>
-      <h1>Rotina do Casal</h1>
-      <nav>
-        <Link to="/categories">Categorias</Link>
-        <Link to="/items">Meus itens</Link>
-      </nav>
-    </div>
-  )
-}
+import TodayPage from './features/today/TodayPage'
 
 function App() {
   return (
@@ -71,7 +60,7 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <Home />
+                <TodayPage />
               </ProtectedRoute>
             }
           />
