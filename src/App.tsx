@@ -9,6 +9,7 @@ import ItemFormPage from './features/items/ItemFormPage'
 import ItemsListPage from './features/items/ItemsListPage'
 import TodayPage from './features/today/TodayPage'
 import AgendaPage from './features/agenda/AgendaPage'
+import StatsPage from './features/stats/StatsPage'
 
 function App() {
   return (
@@ -70,6 +71,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AgendaPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/estatisticas"
+            element={
+              <ProtectedRoute>
+                <StatsPage />
               </ProtectedRoute>
             }
           />
