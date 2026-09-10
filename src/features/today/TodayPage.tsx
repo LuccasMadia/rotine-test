@@ -75,6 +75,7 @@ export default function TodayPage() {
         <Link to="/estatisticas">Estatísticas</Link>
         <Link to="/categories">Categorias</Link>
         <Link to="/items">Meus itens</Link>
+        <Link to="/configuracoes">Configurações</Link>
       </nav>
       {groups.map(({ category, occurrences: categoryOccurrences }) => (
         <section key={category.id}>

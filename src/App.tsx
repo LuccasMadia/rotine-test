@@ -10,6 +10,7 @@ import ItemsListPage from './features/items/ItemsListPage'
 import TodayPage from './features/today/TodayPage'
 import AgendaPage from './features/agenda/AgendaPage'
 import StatsPage from './features/stats/StatsPage'
+import SettingsPage from './features/settings/SettingsPage'
 
 function App() {
   return (
@@ -79,6 +80,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <StatsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/configuracoes"
+            element={
+              <ProtectedRoute>
+                <SettingsPage />
               </ProtectedRoute>
             }
           />
