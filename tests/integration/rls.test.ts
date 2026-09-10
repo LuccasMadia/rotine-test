@@ -126,4 +126,41 @@ describe('routine_items RLS', () => {
     const { data: seenByA } = await a.client.from('categories').select('*').eq('user_id', b.userId)
     expect(seenByA).toEqual([])
   })
+
+  it('user can see partner category only when used by a shared item', async () => {
+    const ts = Date.now()
+    const code = `code-${ts}`
+    const a = await signUp(`luccasmadia07+a-partnercat-${ts}@gmail.com`, 'password123')
+    const b = await signUp(`luccasmadia07+b-partnercat-${ts}@gmail.com`, 'password123')
+
+    await a.client.from('couples').insert({ code, user_a: a.userId })
+    await b.client.from('couples').update({ user_b: b.userId }).eq('code', code)
+
+    const { data: sharedCategory } = await b.client
+      .from('categories')
+      .insert({ user_id: b.userId, nome: 'Compartilhada', cor: '#000', icone: 'star' })
+      .select()
+      .single()
+
+    const { data: privateCategory } = await b.client
+      .from('categories')
+      .insert({ user_id: b.userId, nome: 'PrivadaDeB', cor: '#000', icone: 'lock' })
+      .select()
+      .single()
+
+    await b.client.from('routine_items').insert({
+      user_id: b.userId,
+      category_id: sharedCategory!.id,
+      titulo: 'Item compartilhado de B',
+      data_inicio: '2026-08-12',
+      horario: '09:00',
+      is_shared: true,
+    })
+
+    const { data: seenByA } = await a.client.from('categories').select('*').eq('user_id', b.userId)
+
+    expect(seenByA).toHaveLength(1)
+    expect(seenByA![0].id).toBe(sharedCategory!.id)
+    expect(seenByA!.some((category) => category.id === privateCategory!.id)).toBe(false)
+  })
 })
