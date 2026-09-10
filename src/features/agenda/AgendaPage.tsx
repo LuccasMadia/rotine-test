@@ -10,18 +10,14 @@ import {
   type ItemCompletion,
 } from '../completions/completionsApi'
 import { buildOccurrences, type Occurrence } from '../../lib/occurrences'
-import { addDays, startOfWeek } from '../../lib/recurrence'
+import { addDays, localDateISO, startOfWeek } from '../../lib/recurrence'
 import OccurrenceRow from '../occurrences/OccurrenceRow'
 
 const WEEKDAY_LABELS = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
 
-function todayISO(): string {
-  return new Date().toISOString().slice(0, 10)
-}
-
 export default function AgendaPage() {
   const { user } = useAuth()
-  const [weekStart, setWeekStart] = useState(() => startOfWeek(todayISO()))
+  const [weekStart, setWeekStart] = useState(() => startOfWeek(localDateISO()))
   const [items, setItems] = useState<RoutineItem[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [completions, setCompletions] = useState<ItemCompletion[]>([])
@@ -81,7 +77,7 @@ export default function AgendaPage() {
       </nav>
       <div>
         <button onClick={() => setWeekStart(addDays(weekStart, -7))}>← Semana anterior</button>
-        <button onClick={() => setWeekStart(startOfWeek(todayISO()))}>Semana atual</button>
+        <button onClick={() => setWeekStart(startOfWeek(localDateISO()))}>Semana atual</button>
         <button onClick={() => setWeekStart(addDays(weekStart, 7))}>Próxima semana →</button>
       </div>
       {days.map((day, index) => {

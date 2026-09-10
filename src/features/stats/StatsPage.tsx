@@ -6,14 +6,7 @@ import { listCategories, type Category } from '../categories/categoriesApi'
 import { listCompletions, type ItemCompletion } from '../completions/completionsApi'
 import { buildOccurrences } from '../../lib/occurrences'
 import { computeCategoryStats, computeStreak } from '../../lib/stats'
-
-function todayISO(): string {
-  return new Date().toISOString().slice(0, 10)
-}
-
-function startOfMonth(dateStr: string): string {
-  return `${dateStr.slice(0, 7)}-01`
-}
+import { localDateISO, startOfMonth } from '../../lib/recurrence'
 
 export default function StatsPage() {
   const { user } = useAuth()
@@ -24,7 +17,7 @@ export default function StatsPage() {
 
   useEffect(() => {
     if (!user) return
-    const today = todayISO()
+    const today = localDateISO()
     const monthStart = startOfMonth(today)
     Promise.all([listItems(), listCategories(), listCompletions(monthStart, today)])
       .then(([itemsResult, categoriesResult, completionsResult]) => {
@@ -37,7 +30,7 @@ export default function StatsPage() {
 
   if (!user) return null
 
-  const today = todayISO()
+  const today = localDateISO()
   const monthStart = startOfMonth(today)
   const occurrences = buildOccurrences(items, completions, user.id, monthStart, today)
   const categoryStats = computeCategoryStats(occurrences, categories)

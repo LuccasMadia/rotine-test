@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest'
-import { getOccurrencesInRange, isOccurrence, type RecurrenceEnd, type RecurrenceRule } from './recurrence'
+import {
+  getOccurrencesInRange,
+  isOccurrence,
+  startOfMonth,
+  type RecurrenceEnd,
+  type RecurrenceRule,
+} from './recurrence'
 
 const NEVER: RecurrenceEnd = { type: 'never' }
 
@@ -96,5 +102,12 @@ describe('recurrence: end conditions', () => {
       '2026-01-01',
       '2026-01-02',
     ])
+  })
+})
+
+describe('startOfMonth', () => {
+  it('returns the first day of the month for a given date', () => {
+    expect(startOfMonth('2026-09-10')).toBe('2026-09-01')
+    expect(startOfMonth('2026-01-31')).toBe('2026-01-01')
   })
 })

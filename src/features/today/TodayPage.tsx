@@ -10,11 +10,8 @@ import {
   type ItemCompletion,
 } from '../completions/completionsApi'
 import { buildOccurrences, type Occurrence } from '../../lib/occurrences'
+import { localDateISO } from '../../lib/recurrence'
 import OccurrenceRow from '../occurrences/OccurrenceRow'
-
-function todayISO(): string {
-  return new Date().toISOString().slice(0, 10)
-}
 
 export default function TodayPage() {
   const { user } = useAuth()
@@ -29,7 +26,7 @@ export default function TodayPage() {
 
   async function loadData() {
     try {
-      const today = todayISO()
+      const today = localDateISO()
       const [itemsResult, categoriesResult, completionsResult] = await Promise.all([
         listItems(),
         listCategories(),
@@ -60,7 +57,7 @@ export default function TodayPage() {
 
   if (!user) return null
 
-  const today = todayISO()
+  const today = localDateISO()
   const occurrences = buildOccurrences(items, completions, user.id, today, today)
 
   const groups = categories
