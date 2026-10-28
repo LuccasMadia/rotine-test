@@ -1,8 +1,17 @@
-import { precacheAndRoute } from 'workbox-precaching'
+import { clientsClaim } from 'workbox-core'
+import { cleanupOutdatedCaches, createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching'
+import { NavigationRoute, registerRoute } from 'workbox-routing'
 
 declare let self: ServiceWorkerGlobalScope
 
+// registerType 'autoUpdate': a versão nova assume na hora em vez de esperar fechar todas as abas
+self.skipWaiting()
+clientsClaim()
+
+cleanupOutdatedCaches()
 precacheAndRoute(self.__WB_MANIFEST)
+// Rotas do React Router (/agenda, /items/:id/edit…) abrem offline e a partir da notificação
+registerRoute(new NavigationRoute(createHandlerBoundToURL('index.html')))
 
 type PushPayload = { title?: string; body?: string; itemId?: string }
 
