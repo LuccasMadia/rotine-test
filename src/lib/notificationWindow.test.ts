@@ -54,4 +54,14 @@ describe('shouldNotifyNow', () => {
     }
     expect(shouldNotifyNow(endedItem, '2026-09-10', '08:56', '09:00')).toBe(false)
   })
+
+  it("uses yesterday's occurrence for a pre-midnight horario in a window that wraps midnight", () => {
+    const onceItem: NotifiableItem = {
+      ...dailyItem,
+      horario: '23:58',
+      data_inicio: '2026-09-09',
+      recurrence_rule: { type: 'once' },
+    }
+    expect(shouldNotifyNow(onceItem, '2026-09-10', '23:57', '00:02')).toBe(true)
+  })
 })

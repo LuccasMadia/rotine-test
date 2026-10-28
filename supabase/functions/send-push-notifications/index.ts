@@ -110,6 +110,11 @@ function isWithinWindow(horario: string, windowStart: string, windowEnd: string)
   return time > windowStart || time <= windowEnd
 }
 
+// Numa janela que cruza a meia-noite, um horário depois de windowEnd (ex: 23:58 com fim 00:02) é de ontem.
+function occurrenceDate(horario: string, windowEnd: string, today: string): string {
+  return horario.slice(0, 5) > windowEnd ? addDays(today, -1) : today
+}
+
 // --- Janela de tempo em UTC-3 fixo ---
 
 function localWindow(): { today: string; windowStart: string; windowEnd: string } {
@@ -137,7 +142,7 @@ type RoutineItemRow = {
   horario: string
   is_shared: boolean
   recurrence_rule: RecurrenceRule
-  recurrence_end: RecurrenceEnd
+  recurrence_end: RecurrenceEnd | null
 }
 
 Deno.serve(async () => {
@@ -164,9 +169,12 @@ Deno.serve(async () => {
   let skipped = 0
 
   for (const item of (items ?? []) as RoutineItemRow[]) {
+    const date = occurrenceDate(item.horario, windowEnd, today)
+    // recurrence_end é nullable no banco (linhas anteriores ao default da migration 0002)
+    const end: RecurrenceEnd = item.recurrence_end ?? { type: 'never' }
     const isDue =
-      isOccurrence(item.recurrence_rule, item.recurrence_end, item.data_inicio, today) &&
-      isWithinWindow(item.horario, windowStart, windowEnd)
+      isWithinWindow(item.horario, windowStart, windowEnd) &&
+      isOccurrence(item.recurrence_rule, end, item.data_inicio, date)
     if (!isDue) continue
 
     const recipients = [item.user_id]
@@ -181,7 +189,7 @@ Deno.serve(async () => {
         .select('id')
         .eq('routine_item_id', item.id)
         .eq('user_id', recipientId)
-        .eq('data', today)
+        .eq('data', date)
         .maybeSingle()
       if (completion) {
         skipped += 1
@@ -190,7 +198,7 @@ Deno.serve(async () => {
 
       const { error: logError } = await supabase
         .from('notification_log')
-        .insert({ routine_item_id: item.id, user_id: recipientId, occurrence_date: today })
+        .insert({ routine_item_id: item.id, user_id: recipientId, occurrence_date: date })
       if (logError) {
         skipped += 1
         continue

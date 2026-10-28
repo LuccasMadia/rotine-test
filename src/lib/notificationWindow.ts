@@ -1,4 +1,4 @@
-import { isOccurrence, type RecurrenceEnd, type RecurrenceRule } from './recurrence'
+import { addDays, isOccurrence, type RecurrenceEnd, type RecurrenceRule } from './recurrence'
 
 export type NotifiableItem = {
   id: string
@@ -16,12 +16,18 @@ export function isWithinWindow(horario: string, windowStart: string, windowEnd: 
   return time > windowStart || time <= windowEnd
 }
 
+// Numa janela que cruza a meia-noite, um horário depois de windowEnd (ex: 23:58 com fim 00:02) é de ontem.
+export function occurrenceDate(horario: string, windowEnd: string, today: string): string {
+  return horario.slice(0, 5) > windowEnd ? addDays(today, -1) : today
+}
+
 export function shouldNotifyNow(
   item: NotifiableItem,
   today: string,
   windowStart: string,
   windowEnd: string,
 ): boolean {
-  if (!isOccurrence(item.recurrence_rule, item.recurrence_end, item.data_inicio, today)) return false
+  const date = occurrenceDate(item.horario, windowEnd, today)
+  if (!isOccurrence(item.recurrence_rule, item.recurrence_end, item.data_inicio, date)) return false
   return isWithinWindow(item.horario, windowStart, windowEnd)
 }
