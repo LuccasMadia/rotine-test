@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../../lib/supabaseClient'
+import { authErrorMessage } from './authErrorMessage'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -13,7 +14,7 @@ export default function LoginPage() {
     setError(null)
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
-      setError(error.message)
+      setError(authErrorMessage(error))
       return
     }
     navigate('/')
