@@ -126,7 +126,7 @@ Markup do `OccurrenceRow` (Figma "Linha item"): `<li className="occurrence">` co
 
 - [ ] **Step 1: Testes que falham** — `OccurrenceRow.test.tsx` (montar um `Occurrence` fake com `item` contendo `titulo`, `horario: '07:00:00'`, `is_shared`, `recurrence_rule: { type: 'daily' }`, `category_id`; `date: '2026-10-29'`):
   - `it('uses the item title as the checkbox accessible name')`: `getByRole('checkbox', { name: /Academia/ })`.
-  - `it('calls onToggle with the occurrence when tapped')`: `userEvent.click(checkbox)` → `onToggle` chamado com o objeto.
+  - `it('calls onToggle with the occurrence when tapped')`: `fireEvent.click(checkbox)` (não há `@testing-library/user-event` no projeto; não instalar) → `onToggle` chamado com o objeto.
   - `it('shows the partner status only for shared items')`: `is_shared: true, partnerCompletion: true` → texto `Par: feito`; `is_shared: false` → `queryByText(/Par:/)` é null.
   - `it('keeps a long title intact')`: título de 80 caracteres aparece inteiro em `getByText`.
   - `it('shows HH:MM without seconds')`: `getByText(/07:00 ·/)` e `queryByText(/07:00:00/)` null.
