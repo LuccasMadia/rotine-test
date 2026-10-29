@@ -22,8 +22,8 @@ function parseLocal(iso: string): Date {
   return new Date(y, m - 1, d)
 }
 
-function shortDate(iso: string): string {
-  return parseLocal(iso).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace(/\.| de/g, '')
+export function shortDate(iso: string): string {
+  return parseLocal(iso).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace(/\./g, '').replace(' de ', ' ')
 }
 
 export default function AgendaPage() {

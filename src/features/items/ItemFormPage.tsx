@@ -207,6 +207,7 @@ export default function ItemFormPage() {
 
         <fieldset className="segmented">
           <legend className="field-label">Repete</legend>
+          <div className="segmented__track">
           {RECURRENCE_OPTIONS.map(([value, label]) => (
             <label key={value}>
               <input
@@ -219,6 +220,7 @@ export default function ItemFormPage() {
               <span>{label}</span>
             </label>
           ))}
+          </div>
         </fieldset>
 
         {recurrenceType === 'weekly' && (
@@ -287,6 +289,7 @@ export default function ItemFormPage() {
 
         <fieldset className="segmented">
           <legend className="field-label">Prioridade</legend>
+          <div className="segmented__track">
           {PRIORITY_OPTIONS.map(([value, label]) => (
             <label key={value}>
               <input
@@ -299,6 +302,7 @@ export default function ItemFormPage() {
               <span>{label}</span>
             </label>
           ))}
+          </div>
         </fieldset>
 
         <label className="field">
