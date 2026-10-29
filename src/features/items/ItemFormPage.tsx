@@ -3,13 +3,27 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { getPartnerId } from '../couple/coupleApi'
 import { listCategories, type Category } from '../categories/categoriesApi'
-import { createItem, getItem, updateItem, type Priority } from './itemsApi'
+import { createItem, deleteItem, getItem, updateItem, type Priority } from './itemsApi'
+import Icon from '../../ui/Icon'
+import PageHeader from '../../ui/PageHeader'
 import type { RecurrenceEnd, RecurrenceRule } from '../../lib/recurrence'
 
 type RecurrenceType = RecurrenceRule['type']
 type EndType = RecurrenceEnd['type']
 
-const WEEKDAY_LABELS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
+const WEEKDAY_LABELS = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
+const WEEKDAY_NAMES = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
+const RECURRENCE_OPTIONS: [RecurrenceType, string][] = [
+  ['once', 'Única'],
+  ['daily', 'Diária'],
+  ['weekly', 'Semanal'],
+  ['monthly', 'Mensal'],
+]
+const PRIORITY_OPTIONS: [Priority, string][] = [
+  ['alta', 'Alta'],
+  ['media', 'Média'],
+  ['baixa', 'Baixa'],
+]
 
 export default function ItemFormPage() {
   const { user } = useAuth()
@@ -150,100 +164,177 @@ export default function ItemFormPage() {
     }
   }
 
+  async function handleDelete() {
+    if (!id) return
+    if (!window.confirm('Excluir este item de rotina?')) return
+    setError(null)
+    try {
+      await deleteItem(id)
+      navigate('/items')
+    } catch (e) {
+      setError((e as Error).message)
+    }
+  }
+
   return (
-    <div>
-      <h1>{isEditing ? 'Editar item' : 'Novo item'}</h1>
-      <form onSubmit={handleSubmit}>
-        <input placeholder="Título" value={titulo} onChange={(e) => setTitulo(e.target.value)} required />
-        <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} required>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.nome}
-            </option>
-          ))}
-        </select>
-        <textarea placeholder="Notas" value={notas} onChange={(e) => setNotas(e.target.value)} />
-        <select value={prioridade} onChange={(e) => setPrioridade(e.target.value as Priority)}>
-          <option value="alta">Alta</option>
-          <option value="media">Média</option>
-          <option value="baixa">Baixa</option>
-        </select>
-        <input type="date" value={dataInicio} onChange={(e) => setDataInicio(e.target.value)} required />
-        <input type="time" value={horario} onChange={(e) => setHorario(e.target.value)} required />
-
-        <fieldset>
-          <legend>Recorrência</legend>
-          <select value={recurrenceType} onChange={(e) => setRecurrenceType(e.target.value as RecurrenceType)}>
-            <option value="once">Única</option>
-            <option value="daily">Diária</option>
-            <option value="weekly">Semanal</option>
-            <option value="monthly">Mensal</option>
+    <div className="page">
+      <PageHeader title={isEditing ? 'Editar item' : 'Novo item'} backTo="/items" />
+      <form className="form" onSubmit={handleSubmit}>
+        <label className="field">
+          <span>Título</span>
+          <input value={titulo} onChange={(e) => setTitulo(e.target.value)} required />
+        </label>
+        <label className="field">
+          <span>Categoria</span>
+          <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} required>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.nome}
+              </option>
+            ))}
           </select>
+        </label>
+        <div className="field-row">
+          <label className="field">
+            <span>Começa em</span>
+            <input type="date" value={dataInicio} onChange={(e) => setDataInicio(e.target.value)} required />
+          </label>
+          <label className="field">
+            <span>Horário</span>
+            <input type="time" value={horario} onChange={(e) => setHorario(e.target.value)} required />
+          </label>
+        </div>
 
-          {recurrenceType === 'weekly' && (
-            <div>
-              <label>
-                A cada
-                <input
-                  type="number"
-                  min={1}
-                  value={weeklyInterval}
-                  onChange={(e) => setWeeklyInterval(Number(e.target.value))}
-                />
-                semana(s)
-              </label>
-              <div>
-                {WEEKDAY_LABELS.map((label, day) => (
-                  <label key={day}>
-                    <input
-                      type="checkbox"
-                      checked={weeklyDays.includes(day)}
-                      onChange={() => toggleWeeklyDay(day)}
-                    />
-                    {label}
-                  </label>
-                ))}
-              </div>
-            </div>
-          )}
+        <fieldset className="segmented">
+          <legend className="sr-only">Repete</legend>
+          {RECURRENCE_OPTIONS.map(([value, label]) => (
+            <label key={value}>
+              <input
+                type="radio"
+                name="recurrence"
+                value={value}
+                checked={recurrenceType === value}
+                onChange={() => setRecurrenceType(value)}
+              />
+              <span>{label}</span>
+            </label>
+          ))}
+        </fieldset>
 
-          {recurrenceType === 'monthly' && (
-            <label>
-              Dia do mês
+        {recurrenceType === 'weekly' && (
+          <>
+            <fieldset className="day-chips">
+              <legend className="sr-only">Dias da semana</legend>
+              {WEEKDAY_LABELS.map((label, day) => (
+                <label key={day}>
+                  <input
+                    type="checkbox"
+                    aria-label={WEEKDAY_NAMES[day]}
+                    checked={weeklyDays.includes(day)}
+                    onChange={() => toggleWeeklyDay(day)}
+                  />
+                  <span aria-hidden="true">{label}</span>
+                </label>
+              ))}
+            </fieldset>
+            <label className="field">
+              <span>A cada (semanas)</span>
               <input
                 type="number"
                 min={1}
-                max={31}
-                value={monthlyDay}
-                onChange={(e) => setMonthlyDay(Number(e.target.value))}
+                value={weeklyInterval}
+                onChange={(e) => setWeeklyInterval(Number(e.target.value))}
               />
             </label>
-          )}
+          </>
+        )}
 
+        {recurrenceType === 'monthly' && (
+          <label className="field">
+            <span>Dia do mês</span>
+            <input
+              type="number"
+              min={1}
+              max={31}
+              value={monthlyDay}
+              onChange={(e) => setMonthlyDay(Number(e.target.value))}
+            />
+          </label>
+        )}
+
+        <label className="field">
+          <span>Termina</span>
           <select value={endType} onChange={(e) => setEndType(e.target.value as EndType)}>
             <option value="never">Nunca termina</option>
             <option value="date">Até uma data</option>
             <option value="count">Número de repetições</option>
           </select>
-
-          {endType === 'date' && (
+        </label>
+        {endType === 'date' && (
+          <label className="field">
+            <span>Data final</span>
             <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-          )}
-          {endType === 'count' && (
+          </label>
+        )}
+        {endType === 'count' && (
+          <label className="field">
+            <span>Repetições</span>
             <input type="number" min={1} value={endCount} onChange={(e) => setEndCount(Number(e.target.value))} />
-          )}
-        </fieldset>
-
-        {hasPartner && (
-          <label>
-            <input type="checkbox" checked={isShared} onChange={(e) => setIsShared(e.target.checked)} />
-            Compartilhar com o parceiro
           </label>
         )}
 
-        <button type="submit">{isEditing ? 'Salvar' : 'Criar'}</button>
+        <fieldset className="segmented">
+          <legend className="sr-only">Prioridade</legend>
+          {PRIORITY_OPTIONS.map(([value, label]) => (
+            <label key={value}>
+              <input
+                type="radio"
+                name="prioridade"
+                value={value}
+                checked={prioridade === value}
+                onChange={() => setPrioridade(value)}
+              />
+              <span>{label}</span>
+            </label>
+          ))}
+        </fieldset>
+
+        <label className="field">
+          <span>Notas (opcional)</span>
+          <textarea value={notas} onChange={(e) => setNotas(e.target.value)} />
+        </label>
+
+        {hasPartner && (
+          <label className="card share-card">
+            <Icon name="couple" size={24} />
+            <span className="share-card__text">
+              <strong>Compartilhar com seu par</strong>
+              <span className="muted">Aparece para os dois e cada um marca o seu.</span>
+            </span>
+            <input
+              type="checkbox"
+              role="switch"
+              className="switch"
+              checked={isShared}
+              onChange={(e) => setIsShared(e.target.checked)}
+            />
+          </label>
+        )}
+
+        <button type="submit" className="btn btn--primary">
+          {isEditing ? 'Salvar' : 'Criar item'}
+        </button>
+        {isEditing && (
+          <button type="button" className="btn btn--danger" onClick={handleDelete}>
+            Excluir item
+          </button>
+        )}
       </form>
-      {error && <p role="alert">{error}</p>}
+      {error && (
+        <p role="alert" className="error">
+          {error}
+        </p>
+      )}
     </div>
   )
 }

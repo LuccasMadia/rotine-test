@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { deleteItem, listItems, type RoutineItem } from './itemsApi'
+import { listItems, type RoutineItem } from './itemsApi'
 import { listCategories, type Category } from '../categories/categoriesApi'
 import { describeRecurrence } from '../../lib/recurrenceLabels'
+import Icon from '../../ui/Icon'
+import PageHeader from '../../ui/PageHeader'
 
 export default function ItemsListPage() {
   const [items, setItems] = useState<RoutineItem[]>([])
@@ -23,37 +25,52 @@ export default function ItemsListPage() {
     }
   }
 
-  function categoryName(categoryId: string): string {
-    return categories.find((category) => category.id === categoryId)?.nome ?? '—'
-  }
-
-  async function handleDelete(id: string) {
-    const confirmed = window.confirm('Excluir este item de rotina?')
-    if (!confirmed) return
-    setError(null)
-    try {
-      await deleteItem(id)
-      await loadData()
-    } catch (e) {
-      setError((e as Error).message)
-    }
-  }
-
   return (
-    <div>
-      <h1>Meus itens</h1>
-      <Link to="/items/new">Novo item</Link>
-      <ul>
-        {items.map((item) => (
-          <li key={item.id}>
-            {item.titulo} — {categoryName(item.category_id)} — {item.data_inicio} {item.horario} —{' '}
-            {describeRecurrence(item)}
-            <Link to={`/items/${item.id}/edit`}>Editar</Link>
-            <button onClick={() => handleDelete(item.id)}>Excluir</button>
-          </li>
-        ))}
-      </ul>
-      {error && <p role="alert">{error}</p>}
-    </div>
+    <>
+      <PageHeader
+        title="Meus itens"
+        action={
+          <Link className="btn-chip" to="/categories">
+            <Icon name="tag" size={20} />
+            Categorias
+          </Link>
+        }
+      />
+      {items.length === 0 && !error ? (
+        <p className="empty">Nenhum item ainda. Crie o primeiro pelo + na tela Hoje.</p>
+      ) : (
+        <ul className="list">
+          {items.map((item) => {
+            const cat = categories.find((c) => c.id === item.category_id)
+            return (
+              <li key={item.id} className="item-row" style={{ ['--stripe' as string]: cat?.cor }}>
+                <div className="item-row__text">
+                  <p className="item-row__title">{item.titulo}</p>
+                  <p className="muted">
+                    {describeRecurrence(item)} · {item.horario.slice(0, 5)} · {cat?.nome ?? '—'}
+                    {item.is_shared && (
+                      <>
+                        {' '}
+                        <Icon name="couple" size={14} />
+                        <span className="sr-only">compartilhado</span>
+                      </>
+                    )}
+                  </p>
+                </div>
+                <Link className="icon-btn" to={`/items/${item.id}/edit`} aria-label={`Editar ${item.titulo}`}>
+                  <Icon name="pencil" size={20} />
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
+      )}
+      <p className="muted">Para editar ou excluir, toque no lápis. Itens novos você cria na tela Hoje.</p>
+      {error && (
+        <p role="alert" className="error">
+          {error}
+        </p>
+      )}
+    </>
   )
 }
