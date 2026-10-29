@@ -15,6 +15,7 @@ Antes de mexer numa ação, altere o componente único dela. Atualize este mapa 
 | Configurações `/configuracoes` | Ícone de ajustes no topo de Hoje |
 | Novo item `/items/new` | Botão flutuante "+" em Hoje |
 | Editar item `/items/:id/edit` | Lápis em cada linha de Itens |
+| Parear casal `/couple-setup` | Depois do cadastro; e pelo cartão "Conectar com seu par" em Configurações (só aparece sem par) |
 
 - Barra inferior (componente `BottomNav`): só nas 4 telas principais. Rótulo + ícone sempre; aba ativa com pílula terracota.
 - Telas internas (Novo/Editar item, Categorias, Configurações) têm botão voltar (seta) no cabeçalho, sem barra inferior.
@@ -46,7 +47,7 @@ Antes de mexer numa ação, altere o componente único dela. Atualize este mapa 
 ### Lembretes (push)
 - **Telas:** Configurações.
 - **Componente único:** `SettingsPage`.
-- **Regras:** linha "Lembretes no horário" com interruptor. Aviso fixo sobre iPhone (Tela de Início, iOS 16.4+).
+- **Regras:** linha "Lembretes no horário" com interruptor. Aviso fixo sobre iPhone (Tela de Início, iOS 16.4+). Sem par conectado, aparece também o cartão "Conectar com seu par" → Parear casal.
 
 ### Entrar / Criar conta
 - **Telas:** Entrar, Criar conta.
@@ -55,7 +56,7 @@ Antes de mexer numa ação, altere o componente único dela. Atualize este mapa 
 ### Parear casal
 - **Telas:** Parear casal.
 - **Componente único:** `CoupleSetupPage`.
-- **Regras:** dois cartões — "Vou criar o código" (botão secundário "Criar código", mostra o código grande) e "Recebi um código" (campo + botão "Conectar").
+- **Regras:** dois cartões — "Vou criar o código" (botão secundário "Criar código", mostra o código grande) e "Recebi um código" (campo + botão "Conectar"). Link de texto "Fazer depois" leva para Hoje.
 
 ## Padrões fixos
 - Erros: texto abaixo do bloco, `role="alert"`, cor de erro com texto (nunca só cor).
