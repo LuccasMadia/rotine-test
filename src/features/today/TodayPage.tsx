@@ -12,6 +12,8 @@ import {
 import { buildOccurrences, type Occurrence } from '../../lib/occurrences'
 import { localDateISO } from '../../lib/recurrence'
 import OccurrenceRow from '../occurrences/OccurrenceRow'
+import Icon from '../../ui/Icon'
+import PageHeader from '../../ui/PageHeader'
 
 export default function TodayPage() {
   const { user } = useAuth()
@@ -67,32 +69,56 @@ export default function TodayPage() {
     }))
     .filter((group) => group.occurrences.length > 0)
 
+  const total = occurrences.length
+  const feitos = occurrences.filter((o) => o.ownCompletion).length
+  const falta = total - feitos
+  const eyebrow = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })
+
   return (
-    <div>
-      <h1>Hoje</h1>
-      <nav>
-        <Link to="/agenda">Agenda</Link>
-        <Link to="/estatisticas">Estatísticas</Link>
-        <Link to="/categories">Categorias</Link>
-        <Link to="/items">Meus itens</Link>
-        <Link to="/configuracoes">Configurações</Link>
-      </nav>
+    <div className="stack">
+      <PageHeader
+        eyebrow={eyebrow.charAt(0).toUpperCase() + eyebrow.slice(1)}
+        title="Hoje"
+        action={
+          <Link className="icon-btn" to="/configuracoes" aria-label="Configurações">
+            <Icon name="settings" />
+          </Link>
+        }
+      />
+      {total > 0 && (
+        <div className="today-progress">
+          <div className="today-progress__row">
+            <strong>{feitos} de {total} feitos</strong>
+            <span className="muted">{falta === 0 ? 'tudo feito' : `falta ${falta}`}</span>
+          </div>
+          <div className="progress" role="progressbar" aria-label="Progresso de hoje" aria-valuemin={0} aria-valuenow={feitos} aria-valuemax={total}>
+            <span style={{ width: `${(feitos / total) * 100}%` }} />
+          </div>
+        </div>
+      )}
       {groups.map(({ category, occurrences: categoryOccurrences }) => (
-        <section key={category.id}>
-          <h2 style={{ color: category.cor }}>{category.nome}</h2>
-          <ul>
+        <section key={category.id} className="stack stack--tight">
+          <h2 className="group-title">
+            <span className="dot" style={{ background: category.cor }} />
+            {category.nome}
+          </h2>
+          <ul className="list occurrences">
             {categoryOccurrences.map((occurrence) => (
               <OccurrenceRow
                 key={`${occurrence.item.id}-${occurrence.date}`}
                 occurrence={occurrence}
                 onToggle={handleToggle}
+                categoryColor={category.cor}
               />
             ))}
           </ul>
         </section>
       ))}
-      {groups.length === 0 && <p>Nada programado para hoje.</p>}
-      {error && <p role="alert">{error}</p>}
+      {groups.length === 0 && <p className="empty">Nada programado para hoje.</p>}
+      {error && <p role="alert" className="error">{error}</p>}
+      <Link className="fab" to="/items/new" aria-label="Novo item">
+        <Icon name="plus" />
+      </Link>
     </div>
   )
 }
