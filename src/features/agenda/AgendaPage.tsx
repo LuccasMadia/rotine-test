@@ -33,6 +33,7 @@ export default function AgendaPage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [completions, setCompletions] = useState<ItemCompletion[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     if (user) loadData()
@@ -51,6 +52,8 @@ export default function AgendaPage() {
       setCompletions(completionsResult)
     } catch (e) {
       setError((e as Error).message)
+    } finally {
+      setLoaded(true)
     }
   }
 
@@ -126,9 +129,9 @@ export default function AgendaPage() {
               {day === today ? ' · hoje' : ''}
             </h2>
             {dayOccurrences.length === 0 ? (
-              <p className="empty">Nada programado.</p>
+              loaded && <p className="empty">Nada programado.</p>
             ) : (
-              <ul className="list occurrences">
+              <ul className="list">
                 {dayOccurrences.map((occurrence) => (
                   <OccurrenceRow
                     key={`${occurrence.item.id}-${occurrence.date}`}

@@ -10,6 +10,7 @@ export default function ItemsListPage() {
   const [items, setItems] = useState<RoutineItem[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     loadData()
@@ -22,11 +23,13 @@ export default function ItemsListPage() {
       setCategories(categoriesResult)
     } catch (e) {
       setError((e as Error).message)
+    } finally {
+      setLoaded(true)
     }
   }
 
   return (
-    <>
+    <div className="stack">
       <PageHeader
         title="Meus itens"
         action={
@@ -36,7 +39,7 @@ export default function ItemsListPage() {
           </Link>
         }
       />
-      {items.length === 0 && !error ? (
+      {!loaded ? null : items.length === 0 && !error ? (
         <p className="empty">Nenhum item ainda. Crie o primeiro pelo + na tela Hoje.</p>
       ) : (
         <ul className="list">
@@ -74,6 +77,6 @@ export default function ItemsListPage() {
           {error}
         </p>
       )}
-    </>
+    </div>
   )
 }

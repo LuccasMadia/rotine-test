@@ -21,6 +21,7 @@ export default function TodayPage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [completions, setCompletions] = useState<ItemCompletion[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     if (user) loadData()
@@ -39,6 +40,8 @@ export default function TodayPage() {
       setCompletions(completionsResult)
     } catch (e) {
       setError((e as Error).message)
+    } finally {
+      setLoaded(true)
     }
   }
 
@@ -102,7 +105,7 @@ export default function TodayPage() {
             <span className="dot" style={{ background: category.cor }} />
             {category.nome}
           </h2>
-          <ul className="list occurrences">
+          <ul className="list">
             {categoryOccurrences.map((occurrence) => (
               <OccurrenceRow
                 key={`${occurrence.item.id}-${occurrence.date}`}
@@ -114,7 +117,7 @@ export default function TodayPage() {
           </ul>
         </section>
       ))}
-      {groups.length === 0 && <p className="empty">Nada programado para hoje.</p>}
+      {loaded && groups.length === 0 && <p className="empty">Nada programado para hoje.</p>}
       {error && <p role="alert" className="error">{error}</p>}
       <Link className="fab" to="/items/new" aria-label="Novo item">
         <Icon name="plus" />

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import Icon from '../../ui/Icon'
 import PageHeader from '../../ui/PageHeader'
 import { useAuth } from '../auth/AuthContext'
+import { getPartnerId } from '../couple/coupleApi'
 import {
   getExistingSubscription,
   isPushSupported,
@@ -14,6 +16,11 @@ export default function SettingsPage() {
   const [supported, setSupported] = useState(true)
   const [enabled, setEnabled] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [noPartner, setNoPartner] = useState(false)
+
+  useEffect(() => {
+    if (user) getPartnerId(user.id).then((id) => setNoPartner(id === null)).catch(() => {})
+  }, [user])
 
   useEffect(() => {
     if (!isPushSupported()) {
@@ -63,6 +70,15 @@ export default function SettingsPage() {
           <div className="card">
             <strong>Este navegador não permite notificações.</strong>
           </div>
+        )}
+        {noPartner && (
+          <Link className="card share-card" to="/couple-setup">
+            <Icon name="couple" size={24} />
+            <span className="share-card__text">
+              <strong>Conectar com seu par</strong>
+              <span className="muted">Para compartilhar itens e ver o que seu par marcou.</span>
+            </span>
+          </Link>
         )}
         <p className="muted">
           No iPhone, os lembretes só funcionam com o app adicionado à Tela de Início (iOS 16.4 ou

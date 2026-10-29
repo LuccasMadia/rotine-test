@@ -4,10 +4,10 @@
   --text: #1F1B16;
   --text-muted: #6B6259;
   --border: #E8E1D7;
-  --primary: #B84F35;
+  --primary: #A8452D;
   --primary-soft: #F6E5DF;
   --on-primary: #FFFFFF;
-  --done: #3F7D5C;
+  --done: #356C4F;
   --done-soft: #E3EFE7;
   --danger: #B3261E;
   --font: 'Plus Jakarta Sans', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -157,7 +157,7 @@ h2 { font-size: 20px; line-height: 26px; font-weight: 700; }
 .field-row > .field { flex: 1; }
 @media (max-width: 359px) { .field-row { flex-direction: column; } }
 .field-inline { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
-.field-inline input { width: 56px; min-height: 44px; padding: 0 8px; text-align: center; background: var(--surface); border: 1.5px solid color-mix(in srgb, var(--text-muted) 45%, transparent); border-radius: 12px; }
+.field-inline input { width: 56px; font-size: 16px; min-height: 44px; padding: 0 8px; text-align: center; background: var(--surface); border: 1.5px solid color-mix(in srgb, var(--text-muted) 45%, transparent); border-radius: 12px; }
 .field-inline input:focus { border-color: var(--primary); outline: none; }
 legend.field-label { font-size: 14px; line-height: 20px; font-weight: 600; color: var(--text); padding: 0; margin-bottom: 6px; }
 
@@ -222,8 +222,7 @@ legend.field-label { font-size: 14px; line-height: 20px; font-weight: 600; color
   transition: transform 150ms, background-color 150ms;
 }
 .switch:checked { background: var(--primary); box-shadow: none; }
-.switch:checked::after { background: var(--on-primary); }
-.switch:checked::after { transform: translateX(20px); }
+.switch:checked::after { background: var(--on-primary); transform: translateX(20px); }
 
 /* misc */
 .chip {

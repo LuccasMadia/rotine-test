@@ -12,6 +12,15 @@ import {
 
 const DEFAULT_COLOR = '#22c55e'
 const COLOR_PRESETS = ['#22c55e', '#3b82f6', '#f59e0b', '#a855f7', '#ef4444', '#14b8a6', '#ec4899']
+const COLOR_NAMES: Record<string, string> = {
+  '#22c55e': 'Verde',
+  '#3b82f6': 'Azul',
+  '#f59e0b': 'Laranja',
+  '#a855f7': 'Roxo',
+  '#ef4444': 'Vermelho',
+  '#14b8a6': 'Turquesa',
+  '#ec4899': 'Rosa',
+}
 const ICON_OPTIONS = ['circle', 'dumbbell', 'book', 'briefcase', 'smile', 'heart', 'star', 'home']
 
 export default function CategoriesPage() {
@@ -123,7 +132,7 @@ export default function CategoriesPage() {
                 <input
                   type="radio"
                   name="cor"
-                  aria-label={color}
+                  aria-label={COLOR_NAMES[color] ?? 'Cor atual'}
                   checked={cor === color}
                   onChange={() => setCor(color)}
                 />

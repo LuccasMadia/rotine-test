@@ -208,18 +208,18 @@ export default function ItemFormPage() {
         <fieldset className="segmented">
           <legend className="field-label">Repete</legend>
           <div className="segmented__track">
-          {RECURRENCE_OPTIONS.map(([value, label]) => (
-            <label key={value}>
-              <input
-                type="radio"
-                name="recurrence"
-                value={value}
-                checked={recurrenceType === value}
-                onChange={() => setRecurrenceType(value)}
-              />
-              <span>{label}</span>
-            </label>
-          ))}
+            {RECURRENCE_OPTIONS.map(([value, label]) => (
+              <label key={value}>
+                <input
+                  type="radio"
+                  name="recurrence"
+                  value={value}
+                  checked={recurrenceType === value}
+                  onChange={() => setRecurrenceType(value)}
+                />
+                <span>{label}</span>
+              </label>
+            ))}
           </div>
         </fieldset>
 
@@ -290,18 +290,18 @@ export default function ItemFormPage() {
         <fieldset className="segmented">
           <legend className="field-label">Prioridade</legend>
           <div className="segmented__track">
-          {PRIORITY_OPTIONS.map(([value, label]) => (
-            <label key={value}>
-              <input
-                type="radio"
-                name="prioridade"
-                value={value}
-                checked={prioridade === value}
-                onChange={() => setPrioridade(value)}
-              />
-              <span>{label}</span>
-            </label>
-          ))}
+            {PRIORITY_OPTIONS.map(([value, label]) => (
+              <label key={value}>
+                <input
+                  type="radio"
+                  name="prioridade"
+                  value={value}
+                  checked={prioridade === value}
+                  onChange={() => setPrioridade(value)}
+                />
+                <span>{label}</span>
+              </label>
+            ))}
           </div>
         </fieldset>
 

@@ -17,6 +17,7 @@ export default function StatsPage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [completions, setCompletions] = useState<ItemCompletion[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     if (!user) return
@@ -29,6 +30,7 @@ export default function StatsPage() {
         setCompletions(completionsResult)
       })
       .catch((e) => setError((e as Error).message))
+      .finally(() => setLoaded(true))
   }, [user])
 
   if (!user) return null
@@ -61,7 +63,7 @@ export default function StatsPage() {
       </div>
       <section className="card stack stack--tight">
         <h2 className="group-title">Por categoria</h2>
-        {withOccurrences.length === 0 ? (
+        {!loaded ? null : withOccurrences.length === 0 ? (
           <p className="empty">Ainda não há itens neste mês.</p>
         ) : (
           withOccurrences.map((stat) => {
