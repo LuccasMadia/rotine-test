@@ -360,3 +360,25 @@ h2 { font-size: 20px; line-height: 26px; font-weight: 700; }
 .form { display: flex; flex-direction: column; gap: 16px; }
 .share-card { display: flex; align-items: center; gap: 12px; }
 .share-card__text { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+
+/* categories, auth, couple setup */
+.swatches { display: flex; flex-wrap: wrap; gap: 4px; border: 0; padding: 0; min-width: 0; }
+.swatches legend { font-size: 14px; line-height: 20px; font-weight: 600; padding: 0; margin-bottom: 6px; }
+.swatches label { position: relative; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; }
+.swatches input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.swatches span { width: 40px; height: 40px; border-radius: 50%; background: var(--swatch); }
+.swatches input:checked + span { box-shadow: 0 0 0 3px var(--bg), 0 0 0 6px var(--text); }
+.swatches input:focus-visible + span { outline: 2px solid var(--primary); outline-offset: 3px; }
+.cat-row { display: flex; align-items: center; gap: 4px; padding: 4px 4px 4px 16px; }
+.cat-row .dot { width: 14px; height: 14px; border-radius: 50%; flex: none; margin-right: 8px; }
+.cat-row__name { flex: 1; min-width: 0; font-weight: 600; overflow-wrap: anywhere; }
+.auth { display: flex; flex-direction: column; gap: 16px; }
+.auth h1 { font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: 0; margin-top: 16px; }
+.auth__mark { position: relative; width: 72px; height: 44px; }
+.auth__mark i { position: absolute; top: 0; width: 44px; height: 44px; border-radius: 50%; }
+.auth__mark i:first-child { left: 0; background: var(--primary); }
+.auth__mark i:last-child { left: 28px; background: var(--done); opacity: 0.9; }
+.auth .brand { font-size: 20px; line-height: 26px; font-weight: 800; }
+.code-box { background: var(--primary-soft); border-radius: 12px; padding: 16px; text-align: center; display: flex; flex-direction: column; gap: 4px; }
+.code-box strong { font-size: 28px; line-height: 34px; font-weight: 800; letter-spacing: 0.2em; }
+.divider { text-align: center; color: var(--text-muted); font-size: 13px; font-weight: 600; }

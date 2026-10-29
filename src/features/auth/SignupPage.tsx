@@ -20,20 +20,37 @@ export default function SignupPage() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="page auth" onSubmit={handleSubmit}>
+      <div className="auth__mark" aria-hidden="true">
+        <i />
+        <i />
+      </div>
+      <p className="brand">Rotina do Casal</p>
+      <p className="muted">O dia de vocês dois, marcado num toque.</p>
       <h1>Criar conta</h1>
-      <input type="email" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-      <input
-        type="password"
-        placeholder="senha"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        minLength={6}
-        required
-      />
-      {error && <p role="alert">{error}</p>}
-      <button type="submit">Criar conta</button>
-      <Link to="/login">Já tenho conta</Link>
+      <label className="field">
+        <span>E-mail</span>
+        <input type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+      </label>
+      <label className="field">
+        <span>Senha</span>
+        <input
+          type="password"
+          autoComplete="new-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          minLength={6}
+          required
+        />
+        <span className="muted">Mínimo de 6 caracteres.</span>
+      </label>
+      {error && (
+        <p role="alert" className="error">
+          {error}
+        </p>
+      )}
+      <button type="submit" className="btn btn--primary">Criar conta</button>
+      <Link className="btn btn--text" to="/login">Já tenho conta</Link>
     </form>
   )
 }

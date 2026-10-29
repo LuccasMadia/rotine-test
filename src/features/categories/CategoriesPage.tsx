@@ -1,4 +1,6 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useState, type CSSProperties, type FormEvent } from 'react'
+import Icon from '../../ui/Icon'
+import PageHeader from '../../ui/PageHeader'
 import { useAuth } from '../auth/AuthContext'
 import {
   createCategory,
@@ -8,6 +10,8 @@ import {
   type Category,
 } from './categoriesApi'
 
+const DEFAULT_COLOR = '#22c55e'
+const COLOR_PRESETS = ['#22c55e', '#3b82f6', '#f59e0b', '#a855f7', '#ef4444', '#14b8a6', '#ec4899']
 const ICON_OPTIONS = ['circle', 'dumbbell', 'book', 'briefcase', 'smile', 'heart', 'star', 'home']
 
 export default function CategoriesPage() {
@@ -15,7 +19,7 @@ export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [nome, setNome] = useState('')
-  const [cor, setCor] = useState('#6366f1')
+  const [cor, setCor] = useState(DEFAULT_COLOR)
   const [icone, setIcone] = useState(ICON_OPTIONS[0])
   const [error, setError] = useState<string | null>(null)
 
@@ -41,7 +45,7 @@ export default function CategoriesPage() {
   function resetForm() {
     setEditingId(null)
     setNome('')
-    setCor('#6366f1')
+    setCor(DEFAULT_COLOR)
     setIcone(ICON_OPTIONS[0])
   }
 
@@ -76,37 +80,72 @@ export default function CategoriesPage() {
     }
   }
 
+  const colors = COLOR_PRESETS.includes(cor) ? COLOR_PRESETS : [...COLOR_PRESETS, cor]
+
   return (
-    <div>
-      <h1>Categorias</h1>
-      <ul>
-        {categories.map((category) => (
-          <li key={category.id}>
-            <span style={{ color: category.cor }}>{category.icone}</span> {category.nome}
-            <button onClick={() => startEdit(category)}>Editar</button>
-            <button onClick={() => handleDelete(category.id)}>Excluir</button>
-          </li>
-        ))}
-      </ul>
-      <form onSubmit={handleSubmit}>
-        <h2>{editingId ? 'Editar categoria' : 'Nova categoria'}</h2>
-        <input placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} required />
-        <input type="color" value={cor} onChange={(e) => setCor(e.target.value)} />
-        <select value={icone} onChange={(e) => setIcone(e.target.value)}>
-          {ICON_OPTIONS.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
+    <div className="page">
+      <PageHeader title="Categorias" backTo="/items" />
+      <div className="stack">
+        <ul className="list">
+          {categories.map((category) => (
+            <li key={category.id} className="cat-row">
+              <span className="dot" style={{ background: category.cor }} />
+              <span className="cat-row__name">{category.nome}</span>
+              <button
+                type="button"
+                className="icon-btn"
+                aria-label={`Editar ${category.nome}`}
+                onClick={() => startEdit(category)}
+              >
+                <Icon name="pencil" />
+              </button>
+              <button
+                type="button"
+                className="icon-btn"
+                aria-label={`Excluir ${category.nome}`}
+                onClick={() => handleDelete(category.id)}
+              >
+                <Icon name="trash" />
+              </button>
+            </li>
           ))}
-        </select>
-        <button type="submit">{editingId ? 'Salvar' : 'Adicionar'}</button>
-        {editingId && (
-          <button type="button" onClick={resetForm}>
-            Cancelar
+        </ul>
+        <form className="card form" onSubmit={handleSubmit}>
+          <h2 className="group-title">{editingId ? 'Editar categoria' : 'Nova categoria'}</h2>
+          <label className="field">
+            <span>Nome</span>
+            <input value={nome} onChange={(e) => setNome(e.target.value)} required />
+          </label>
+          <fieldset className="swatches">
+            <legend>Cor</legend>
+            {colors.map((color) => (
+              <label key={color}>
+                <input
+                  type="radio"
+                  name="cor"
+                  aria-label={color}
+                  checked={cor === color}
+                  onChange={() => setCor(color)}
+                />
+                <span style={{ '--swatch': color } as CSSProperties} />
+              </label>
+            ))}
+          </fieldset>
+          <button type="submit" className="btn btn--primary">
+            {editingId ? 'Salvar' : 'Adicionar categoria'}
           </button>
+          {editingId && (
+            <button type="button" className="btn btn--text" onClick={resetForm}>
+              Cancelar
+            </button>
+          )}
+        </form>
+        {error && (
+          <p role="alert" className="error">
+            {error}
+          </p>
         )}
-      </form>
-      {error && <p role="alert">{error}</p>}
+      </div>
     </div>
   )
 }

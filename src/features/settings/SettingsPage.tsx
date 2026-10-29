@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import Icon from '../../ui/Icon'
+import PageHeader from '../../ui/PageHeader'
 import { useAuth } from '../auth/AuthContext'
 import {
   getExistingSubscription,
@@ -39,24 +40,40 @@ export default function SettingsPage() {
   }
 
   return (
-    <div>
-      <h1>Configurações</h1>
-      <nav>
-        <Link to="/">Hoje</Link>
-      </nav>
-      {!supported && (
-        <p>
-          Notificações não são suportadas neste navegador. No iPhone, é preciso iOS 16.4+ e ter
-          instalado o app na tela inicial antes de ativar.
+    <div className="page">
+      <PageHeader title="Configurações" backTo="/" />
+      <div className="stack">
+        {supported ? (
+          <label className="card share-card">
+            <Icon name="bell" size={24} />
+            <span className="share-card__text">
+              <strong>Lembretes no horário</strong>
+              <span className="muted">Uma notificação quando chegar a hora de cada item.</span>
+            </span>
+            <input
+              type="checkbox"
+              role="switch"
+              className="switch"
+              aria-label="Lembretes no horário"
+              checked={enabled}
+              onChange={handleToggle}
+            />
+          </label>
+        ) : (
+          <div className="card">
+            <strong>Este navegador não permite notificações.</strong>
+          </div>
+        )}
+        <p className="muted">
+          No iPhone, os lembretes só funcionam com o app adicionado à Tela de Início (iOS 16.4 ou
+          mais novo).
         </p>
-      )}
-      {supported && (
-        <label>
-          <input type="checkbox" checked={enabled} onChange={handleToggle} />
-          Notificações
-        </label>
-      )}
-      {error && <p role="alert">{error}</p>}
+        {error && (
+          <p role="alert" className="error">
+            {error}
+          </p>
+        )}
+      </div>
     </div>
   )
 }
