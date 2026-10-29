@@ -10,6 +10,8 @@ const MESSAGES: Record<string, string> = {
   over_request_rate_limit: 'Muitas tentativas seguidas. Espere um minuto e tente de novo.',
   over_email_send_rate_limit: 'Muitas tentativas seguidas. Espere um minuto e tente de novo.',
   signup_disabled: 'Novos cadastros estão desativados no momento.',
+  same_password: 'A senha nova precisa ser diferente da atual.',
+  session_not_found: 'Esse link expirou ou já foi usado. Peça um novo.',
 }
 
 export function authErrorMessage(error: { code?: string; message: string }): string {

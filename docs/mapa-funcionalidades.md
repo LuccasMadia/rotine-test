@@ -53,6 +53,11 @@ Antes de mexer numa ação, altere o componente único dela. Atualize este mapa 
 - **Telas:** Entrar, Criar conta.
 - **Regras:** marca no topo, campos E-mail e Senha, botão principal ("Entrar" / "Criar conta"), link de texto para a outra tela ("Criar conta" / "Já tenho conta").
 
+### Esqueci minha senha
+- **Telas:** Entrar (link "Esqueci minha senha") → Esqueci minha senha `/esqueci-senha` → e-mail → Criar senha nova `/nova-senha`.
+- **Componentes:** `ForgotPasswordPage`, `ResetPasswordPage`; mensagens em `authErrorMessage`.
+- **Regras:** campo E-mail + botão "Enviar link"; depois mostra sempre a mesma confirmação ("Se existir uma conta com esse e-mail…"), exista a conta ou não. Na tela nova: campo "Nova senha" (mín. 6) + "Salvar nova senha" → Hoje. Link vencido: "Esse link expirou ou já foi usado." + "Pedir um novo link". Erro de login nunca diz qual campo errou ("E-mail ou senha incorretos").
+
 ### Parear casal
 - **Telas:** Parear casal.
 - **Componente único:** `CoupleSetupPage`.

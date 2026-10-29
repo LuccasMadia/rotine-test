@@ -49,6 +49,7 @@ export default function LoginPage() {
         </p>
       )}
       <button type="submit" className="btn btn--primary">Entrar</button>
+      <Link className="btn btn--text" to="/esqueci-senha">Esqueci minha senha</Link>
       <Link className="btn btn--text" to="/signup">Criar conta</Link>
     </form>
   )

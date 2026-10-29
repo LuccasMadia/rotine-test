@@ -3,6 +3,8 @@ import { AuthProvider } from './features/auth/AuthContext'
 import ProtectedRoute from './features/auth/ProtectedRoute'
 import LoginPage from './features/auth/LoginPage'
 import SignupPage from './features/auth/SignupPage'
+import ForgotPasswordPage from './features/auth/ForgotPasswordPage'
+import ResetPasswordPage from './features/auth/ResetPasswordPage'
 import CoupleSetupPage from './features/couple/CoupleSetupPage'
 import CategoriesPage from './features/categories/CategoriesPage'
 import ItemFormPage from './features/items/ItemFormPage'
@@ -20,6 +22,8 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/esqueci-senha" element={<ForgotPasswordPage />} />
+          <Route path="/nova-senha" element={<ResetPasswordPage />} />
           <Route
             path="/couple-setup"
             element={
