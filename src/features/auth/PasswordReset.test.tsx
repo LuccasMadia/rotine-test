@@ -61,6 +61,13 @@ describe('ResetPasswordPage', () => {
     expect(auth.updateUser).toHaveBeenCalledWith({ password: 'segredo123' })
   })
 
+  it('shows the expired message right away when the link came back with an error', () => {
+    window.location.hash = '#error=access_denied&error_code=otp_expired'
+    render(<MemoryRouter><ResetPasswordPage /></MemoryRouter>)
+    expect(screen.getByRole('alert')).toHaveTextContent('link expirou')
+    window.location.hash = ''
+  })
+
   it('explains an expired link instead of trying to save', async () => {
     auth.getSession.mockResolvedValue({ data: { session: null } })
     renderReset()

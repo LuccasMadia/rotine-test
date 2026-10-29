@@ -6,7 +6,8 @@ import { authErrorMessage } from './authErrorMessage'
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [expired, setExpired] = useState(false)
+  // Link vencido ou já usado: o Supabase redireciona com #error=... na URL.
+  const [expired, setExpired] = useState(() => window.location.hash.includes('error='))
   const navigate = useNavigate()
 
   async function handleSubmit(e: FormEvent) {
