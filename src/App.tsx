@@ -10,6 +10,7 @@ import ItemsListPage from './features/items/ItemsListPage'
 import TodayPage from './features/today/TodayPage'
 import AgendaPage from './features/agenda/AgendaPage'
 import StatsPage from './features/stats/StatsPage'
+import AppShell from './ui/AppShell'
 import SettingsPage from './features/settings/SettingsPage'
 
 function App() {
@@ -36,14 +37,6 @@ function App() {
             }
           />
           <Route
-            path="/items"
-            element={
-              <ProtectedRoute>
-                <ItemsListPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/items/new"
             element={
               <ProtectedRoute>
@@ -60,30 +53,6 @@ function App() {
             }
           />
           <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <TodayPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/agenda"
-            element={
-              <ProtectedRoute>
-                <AgendaPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/estatisticas"
-            element={
-              <ProtectedRoute>
-                <StatsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/configuracoes"
             element={
               <ProtectedRoute>
@@ -91,6 +60,18 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            element={
+              <ProtectedRoute>
+                <AppShell />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/" element={<TodayPage />} />
+            <Route path="/agenda" element={<AgendaPage />} />
+            <Route path="/estatisticas" element={<StatsPage />} />
+            <Route path="/items" element={<ItemsListPage />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </AuthProvider>

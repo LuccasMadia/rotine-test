@@ -253,3 +253,25 @@ h2 { font-size: 20px; line-height: 26px; font-weight: 700; }
 }
 .progress { height: 6px; border-radius: 3px; background: var(--border); overflow: hidden; }
 .progress > * { display: block; height: 100%; background: var(--done); transition: width 200ms; }
+
+.page-header { display: flex; align-items: center; gap: 8px; }
+.page-header__text { flex: 1; min-width: 0; }
+.page-header h1 { margin: 0; font-size: 28px; line-height: 34px; font-weight: 800; letter-spacing: -0.02em; }
+.page-header .icon-btn { margin-left: -8px; flex: none; }
+.page-header__action { flex: none; display: flex; gap: 4px; }
+
+.bottom-nav {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+  max-width: 480px; margin: 0 auto;
+  display: flex;
+  height: calc(var(--nav-h) + env(safe-area-inset-bottom));
+  padding: 4px 0 env(safe-area-inset-bottom);
+  background: var(--surface); border-top: 1px solid var(--border);
+}
+.bottom-nav__link {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  color: var(--text-muted); text-decoration: none; font-size: 12px; line-height: 16px; font-weight: 600;
+}
+.bottom-nav__pill { display: flex; align-items: center; justify-content: center; width: 56px; height: 32px; border-radius: 16px; }
+.bottom-nav__link[aria-current="page"] { color: var(--primary); }
+.bottom-nav__link[aria-current="page"] .bottom-nav__pill { background: var(--primary-soft); }
