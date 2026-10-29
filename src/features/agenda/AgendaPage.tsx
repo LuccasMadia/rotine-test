@@ -23,7 +23,7 @@ function parseLocal(iso: string): Date {
 }
 
 function shortDate(iso: string): string {
-  return parseLocal(iso).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace(/\./g, '')
+  return parseLocal(iso).toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' }).replace(/\.| de/g, '')
 }
 
 export default function AgendaPage() {
@@ -99,6 +99,7 @@ export default function AgendaPage() {
                 key={day}
                 href={`#dia-${day}`}
                 className="week-strip__day"
+                aria-label={`${WEEKDAY_LABELS[index]}${index > 0 && index < 6 ? '-feira' : ''}, ${parseLocal(day).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' })}`}
                 aria-current={day === today ? 'date' : undefined}
               >
                 <span className="week-strip__letter">{WEEKDAY_LETTERS[index]}</span>

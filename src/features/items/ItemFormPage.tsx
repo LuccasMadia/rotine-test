@@ -206,7 +206,7 @@ export default function ItemFormPage() {
         </div>
 
         <fieldset className="segmented">
-          <legend className="sr-only">Repete</legend>
+          <legend className="field-label">Repete</legend>
           {RECURRENCE_OPTIONS.map(([value, label]) => (
             <label key={value}>
               <input
@@ -237,14 +237,16 @@ export default function ItemFormPage() {
                 </label>
               ))}
             </fieldset>
-            <label className="field">
-              <span>A cada (semanas)</span>
+            <label className="field-inline">
+              A cada
               <input
                 type="number"
                 min={1}
+                aria-label="Intervalo em semanas"
                 value={weeklyInterval}
                 onChange={(e) => setWeeklyInterval(Number(e.target.value))}
               />
+              {weeklyInterval === 1 ? 'semana' : 'semanas'}
             </label>
           </>
         )}
@@ -284,7 +286,7 @@ export default function ItemFormPage() {
         )}
 
         <fieldset className="segmented">
-          <legend className="sr-only">Prioridade</legend>
+          <legend className="field-label">Prioridade</legend>
           {PRIORITY_OPTIONS.map(([value, label]) => (
             <label key={value}>
               <input

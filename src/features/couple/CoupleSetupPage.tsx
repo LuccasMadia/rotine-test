@@ -36,7 +36,7 @@ export default function CoupleSetupPage() {
   return (
     <div className="page">
       <div className="stack">
-        <Icon name="couple" size={32} />
+        <span style={{ color: 'var(--primary)', display: 'flex' }}><Icon name="couple" size={32} /></span>
         <h1>Conectar com seu par</h1>
         <p className="muted">Um de vocês cria o código e o outro digita. Só precisa fazer uma vez.</p>
         <section className="card form">

@@ -43,7 +43,8 @@ export default function ItemsListPage() {
           {items.map((item) => {
             const cat = categories.find((c) => c.id === item.category_id)
             return (
-              <li key={item.id} className="item-row" style={{ ['--stripe' as string]: cat?.cor }}>
+              <li key={item.id} className="item-row">
+                {cat && <span className="dot" style={{ background: cat.cor }} />}
                 <div className="item-row__text">
                   <p className="item-row__title">{item.titulo}</p>
                   <p className="muted">
@@ -65,7 +66,9 @@ export default function ItemsListPage() {
           })}
         </ul>
       )}
-      <p className="muted">Para editar ou excluir, toque no lápis. Itens novos você cria na tela Hoje.</p>
+      {items.length > 0 && (
+        <p className="muted">Para editar ou excluir, toque no lápis. Itens novos você cria na tela Hoje.</p>
+      )}
       {error && (
         <p role="alert" className="error">
           {error}

@@ -40,10 +40,11 @@ export default function SignupPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           minLength={6}
+          aria-describedby="senha-hint"
           required
         />
-        <span className="muted">Mínimo de 6 caracteres.</span>
       </label>
+      <p id="senha-hint" className="muted">Mínimo de 6 caracteres.</p>
       {error && (
         <p role="alert" className="error">
           {error}

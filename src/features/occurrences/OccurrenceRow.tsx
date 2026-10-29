@@ -29,7 +29,7 @@ export default function OccurrenceRow({ occurrence, onToggle, categoryName, cate
           </span>
         </span>
         {item.is_shared && (
-          <span className={partnerCompletion ? 'chip chip--done' : 'chip'}>
+          <span className={partnerCompletion ? 'chip chip--done' : 'chip chip--neutral'}>
             <Icon name="couple" size={14} />
             <span className="sr-only">Par: </span>
             {partnerCompletion ? 'feito' : 'falta'}
